@@ -1,7 +1,11 @@
-/* === 1. 전체 앱 카드 === */
+.app-container {
+  max-width: 400px;
+  margin: 0 auto;
+}
+
 .todo-app-card {
   max-width: 400px; 
-  margin: 40px auto;
+  margin: 20px auto;
   padding: 20px;
   border-radius: 16px; 
   background-color: #fff;
@@ -12,13 +16,38 @@
 
 .app-title {
   text-align: center;
+  margin-top: 40px;
   margin-bottom: 20px;
   font-size: 1.5rem;
   font-weight: 700;
   letter-spacing: -0.5px;
 }
 
-/* === 2. 할 일 추가 영역 === */
+.navigation {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.navigation a {
+  text-decoration: none;
+  color: #adb5bd;
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 6px 16px;
+  border-radius: 20px;
+  background-color: #f1f3f5;
+  transition: all 0.2s;
+}
+
+.navigation a.active {
+  font-weight: 700;
+  color: white;
+  background-color: #ff7e36;
+  box-shadow: 0 4px 10px rgba(255, 126, 54, 0.3);
+}
+
 .add-todo-group {
   display: flex;
   gap: 6px; 
@@ -26,7 +55,6 @@
   align-items: center; 
 }
 
-/* 커스텀 셀렉트 드롭다운 */
 .custom-select-container {
   position: relative;
   width: 105px;
@@ -88,7 +116,6 @@
 .text-medium { color: #faad14; }
 .text-low { color: #52c41a; }
 
-/* 입력창 및 추가 버튼 */
 .todo-input {
   flex-grow: 1;
   padding: 8px 10px;
@@ -113,13 +140,14 @@
   font-weight: 600;
   font-size: 0.85rem;
   transition: opacity 0.2s;
+  white-space: nowrap;  /* 글자가 세로로 깨지는 현상 방지 */
+  flex-shrink: 0;       /* 입력창 크기에 밀려 찌그러지는 현상 방지 */
 }
 
 .add-button:hover {
   opacity: 0.85;
 }
 
-/* === 3. 필터 버튼 영역 === */
 .filter-button-group {
   display: flex;
   gap: 6px;
@@ -151,7 +179,6 @@
   color: white;
 }
 
-/* === 4. 리스트 아이템 디자인 === */
 .todo-list {
   list-style: none;
   padding: 0;
@@ -222,7 +249,54 @@
 .medium { border-left: 5px solid #faad14; }
 .low { border-left: 5px solid #52c41a; }
 
-/* === 5. 다크 모드 (OS 설정에 따라 자동 반영) === */
+/* API 스타일 영역 */
+.api-title {
+  margin-top: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #333;
+  border-bottom: 1px solid #dee2e6;
+  padding-bottom: 10px;
+  margin-bottom: 15px;
+}
+
+.api-item {
+  padding: 12px 0;
+  border-bottom: 1px solid #f1f3f5;
+  list-style: none;
+}
+
+.api-item h4 {
+  margin: 0 0 6px 0;
+  font-size: 0.9rem;
+  color: #222;
+  text-transform: capitalize;
+}
+
+.api-item p {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #666;
+  line-height: 1.4;
+}
+
+.api-status {
+  text-align: center;
+  font-weight: 600;
+  color: #ff7e36;
+  font-size: 1rem;
+  margin: 50px auto;
+  padding: 20px;
+}
+
+.api-status.error {
+  color: #ff4d4f;
+  background-color: #fff1f0;
+  border: 1px solid #ffccc7;
+  border-radius: 8px;
+}
+
+/* === 다크 모드 지원 === */
 @media (prefers-color-scheme: dark) {
   body {
     background-color: #121212;
@@ -234,6 +308,16 @@
     color: #eee;
   }
 
+  .navigation a {
+    background-color: #2c2c2c;
+    color: #868e96;
+  }
+
+  .navigation a.active {
+    background-color: #ff7e36;
+    color: white;
+  }
+
   .todo-item-row {
     background-color: #2c2c2c;
     border-color: #333;
@@ -243,13 +327,7 @@
     --text-color: #eee; 
   }
 
-  .todo-input {
-    background-color: #2c2c2c;
-    border-color: #444;
-    color: white;
-  }
-
-  .custom-select-trigger, .custom-select-options {
+  .todo-input, .custom-select-trigger, .custom-select-options {
     background-color: #2c2c2c;
     border-color: #444;
     color: white;
@@ -268,4 +346,14 @@
     background-color: #3c3c3c;
     color: #aaa;
   }
+
+  .api-title {
+    color: #eee;
+    border-bottom-color: #444;
+  }
+
+  .api-item h4 { color: #eee; }
+  .api-item p { color: #aaa; }
+  .api-item { border-bottom-color: #333; }
+  .api-status.error { background-color: #2a1215; border-color: #5c2223; }
 }
