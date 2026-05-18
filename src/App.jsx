@@ -5,6 +5,7 @@ import ApiTest from "./ApiTest";
 import axios from "axios";
 import "./App.css";
 
+// 현우 님의 학번과 서버 주소 설정
 const STUDENT_CODE = "20222666"; 
 const BASE_URL = "https://congachu.dev";
 
@@ -22,7 +23,6 @@ function App() {
     }
   };
 
-  // 컴포넌트가 처음 렌더링될 때 서버에서 데이터를 한 번 불러옵니다.
   useEffect(() => {
     fetchTodos();
   }, []);
@@ -31,27 +31,28 @@ function App() {
   const addTodo = async (newContent) => {
     try {
       const res = await axios.post(`${BASE_URL}/api/todos?code=${STUDENT_CODE}`, {
-        content: newContent // 명세서에 따라 text가 아닌 content 사용
+        content: newContent
       });
       console.log("✅ [POST] 새로운 할 일이 서버에 추가되었습니다!", res.data);
-      setTodos((prev) => [...prev, res.data]); // 서버에서 받은 새 데이터를 화면 목록에 추가
+      setTodos((prev) => [...prev, res.data]);
     } catch (error) {
       console.error("❌ [POST] 투두 추가 실패:", error);
     }
   };
 
-  // 3. 완료 상태 변경 (PATCH)
+  // 3. 완료 상태 변경 (POST) ➔ 405 에러 완전 해결!
   const toggleTodo = async (id, currentCompleted) => {
     try {
-      const res = await axios.patch(`${BASE_URL}/api/todos/${id}`, {
-        completed: !currentCompleted // 명세서에 따라 done이 아닌 completed 사용
+      // 서버 규칙에 맞춰 patch/put이 아닌 post로 요청을 보냅니다.
+      const res = await axios.post(`${BASE_URL}/api/todos/${id}`, {
+        completed: !currentCompleted 
       });
-      console.log(`✅ [PATCH] 완료 상태가 서버에 업데이트되었습니다! (ID: ${id})`, res.data);
+      console.log(`✅ [POST-Update] 완료 상태가 서버에 업데이트되었습니다! (ID: ${id})`, res.data);
       setTodos((prev) =>
         prev.map((todo) => (todo.id === id ? { ...todo, completed: !currentCompleted } : todo))
       );
     } catch (error) {
-      console.error("❌ [PATCH] 완료상태 변경 실패:", error);
+      console.error("❌ [POST-Update] 완료상태 변경 실패:", error);
     }
   };
 
@@ -60,7 +61,7 @@ function App() {
     try {
       await axios.delete(`${BASE_URL}/api/todos/${id}`);
       console.log(`✅ [DELETE] 할 일이 서버에서 완전히 삭제되었습니다! (ID: ${id})`);
-      setTodos((prev) => prev.filter((todo) => todo.id !== id)); // 화면에서도 삭제
+      setTodos((prev) => prev.filter((todo) => todo.id !== id));
     } catch (error) {
       console.error("❌ [DELETE] 투두 삭제 실패:", error);
     }
@@ -69,7 +70,7 @@ function App() {
   return (
     <BrowserRouter>
       <div className="app-container">
-        <h2 className="app-title">🔥 To Do List 🔥</h2>
+        <h2 className="app-title">🔥 To Do List</h2>
         
         <nav className="navigation">
           <NavLink to="/" className={({ isActive }) => isActive ? "active" : ""}>전체</NavLink>
