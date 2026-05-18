@@ -10,7 +10,7 @@ function ApiTest() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await axios.get("https://example.com");
+        const response = await axios.get("https://jsonplaceholder.typicode.com/posts?_limit=5");
         setPosts(response.data);
       } catch (err) {
         setError("⚠️ 실패");

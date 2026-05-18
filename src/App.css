@@ -357,3 +357,17 @@
   .api-item { border-bottom-color: #333; }
   .api-status.error { background-color: #2a1215; border-color: #5c2223; }
 }
+
+.delete-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 4px 8px;
+  margin-left: 10px;
+  opacity: 0.5;
+  transition: opacity 0.2s;
+}
+.delete-button:hover {
+  opacity: 1;
+}

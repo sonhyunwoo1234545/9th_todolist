@@ -1,10 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 
-function TodoList({ todos, setTodos, isActiveOnly }) {
+function TodoList({ todos, onAdd, onToggle, onDelete, isActiveOnly }) {
   const [inputText, setInputText] = useState("");
-  const [inputPriority, setInputPriority] = useState("MEDIUM");
   const [filter, setFilter] = useState("ALL"); 
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const inputRef = useRef(null);
 
   useEffect(() => {
@@ -16,59 +14,27 @@ function TodoList({ todos, setTodos, isActiveOnly }) {
       alert("할 일을 입력해주세요!");
       return;
     }
-    const newTodo = {
-      id: Date.now(),
-      text: inputText,
-      done: false,
-      priority: inputPriority,
-    };
-    setTodos([...todos, newTodo]);
+    // App.jsx에서 받아온 API 전송 함수(onAdd) 실행
+    onAdd(inputText); 
     setInputText(""); 
     if (inputRef.current) inputRef.current.focus();
   };
 
-  const handleToggleDone = (id) => {
-    setTodos(
-      todos.map((todo) =>
-        todo.id === id ? { ...todo, done: !todo.done } : todo
-      )
-    );
-  };
-
+  // 서버 명세서에 맞춰 done ➔ completed 로 변경하여 필터링
   const filteredTodos = todos.filter((todo) => {
-    if (isActiveOnly && todo.done) return false;
-    if (filter === "DONE") return todo.done === true;
-    if (filter === "UNDONE") return todo.done === false;
+    if (isActiveOnly && todo.completed) return false;
+    if (filter === "DONE") return todo.completed === true;
+    if (filter === "UNDONE") return todo.completed === false;
     return true; 
   });
 
   return (
     <div className="todo-app-card">
       <div className="add-todo-group">
-        <div className="custom-select-container">
-          <div 
-            className="custom-select-trigger"
-            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-          >
-            {inputPriority === "HIGH" && <span className="text-high">High</span>}
-            {inputPriority === "MEDIUM" && <span className="text-medium">Medium</span>}
-            {inputPriority === "LOW" && <span className="text-low">Low</span>}
-            <span className="arrow">{isDropdownOpen ? "▲" : "▼"}</span>
-          </div>
-          
-          {isDropdownOpen && (
-            <ul className="custom-select-options">
-              <li onClick={() => { setInputPriority("HIGH"); setIsDropdownOpen(false); }}>High</li>
-              <li onClick={() => { setInputPriority("MEDIUM"); setIsDropdownOpen(false); }}>Medium</li>
-              <li onClick={() => { setInputPriority("LOW"); setIsDropdownOpen(false); }}>Low</li>
-            </ul>
-          )}
-        </div>
-
         <input
           type="text"
           ref={inputRef}
-          placeholder="새로운 할 일을 입력하세요"
+          placeholder="서버에 저장할 할 일을 입력하세요"
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleAddTodo()}
@@ -94,26 +60,29 @@ function TodoList({ todos, setTodos, isActiveOnly }) {
 
       <ul className="todo-list">
         {filteredTodos.map((todo) => (
-          <li
-            key={todo.id}
-            className={`todo-item-row ${todo.priority.toLowerCase()}`}
-            onClick={() => handleToggleDone(todo.id)}
-          >
-            <span className="checkbox-wrap">
-              {todo.done ? <span className="checked">✔️</span> : <span className="unchecked"></span>}
+          <li key={todo.id} className="todo-item-row">
+            {/* 완료 체크 토글 */}
+            <span className="checkbox-wrap" onClick={() => onToggle(todo.id, todo.completed)}>
+              {todo.completed ? <span className="checked">✔️</span> : <span className="unchecked"></span>}
             </span>
+            
+            {/* 할 일 내용 텍스트 */}
             <span 
               className="task-text" 
               style={{ 
-                textDecoration: todo.done ? "line-through" : "none",
-                color: todo.done ? "#adb5bd" : "var(--text-color, #333)" 
+                textDecoration: todo.completed ? "line-through" : "none",
+                color: todo.completed ? "#adb5bd" : "var(--text-color, #333)",
+                cursor: "pointer"
               }}
+              onClick={() => onToggle(todo.id, todo.completed)}
             >
-              {todo.text}
+              {todo.content}
             </span>
-            <span className={`priority-badge badge-${todo.priority.toLowerCase()}`}>
-              {todo.priority}
-            </span>
+
+            {/* 🔥 새로 추가된 삭제 버튼 */}
+            <button className="delete-button" onClick={() => onDelete(todo.id)}>
+              ❌
+            </button>
           </li>
         ))}
       </ul>
